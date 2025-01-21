@@ -15,6 +15,7 @@ jobs:
       - name: Set up variables
         id: vars
         run: |
+          gh auth login --with-token $GH_TOKEN
           # Set defaults
           echo "LATEST_COMMIT=$(gh variable get LATEST_COMMIT --repo $GITHUB_REPOSITORY || echo 'none')" >> $GITHUB_ENV
           echo "REMOTE_REPO_URL=https://gitlab.alpinelinux.org/alpine/aports.git" >> $GITHUB_ENV
