@@ -53,8 +53,9 @@ jobs:
           Changes have been detected in the aports repository:
           - Directory '${{ env.TARGET_DIR }}'
           - Branch '${{ env.REMOTE_BRANCH }}'
+          - Previous commit: ${{ env.LATEST_COMMIT }}
           - Latest commit: ${{ env.NEW_COMMIT }}
-          - Compare: [View changes](${{ env.REMOTE_REPO_URL }}/compare/${LATEST_COMMIT}...${{ env.NEW_COMMIT }})"
+          - Compare: [View changes](${{ env.REMOTE_REPO_URL }}/compare/${{ env.LATEST_COMMIT }}...${{ env.NEW_COMMIT }})"
           EOF
           )
 
