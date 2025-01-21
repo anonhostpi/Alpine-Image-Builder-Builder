@@ -15,7 +15,7 @@ jobs:
         run: |
           # Set defaults
           echo "LATEST_COMMIT=$(gh variable get LATEST_COMMIT --repo $GITHUB_REPOSITORY || echo 'none')" >> $GITHUB_ENV
-          echo "REMOTE_REPO_URL=https://example.com/your-remote-repo.git" >> $GITHUB_ENV
+          echo "REMOTE_REPO_URL=https://gitlab.alpinelinux.org/alpine/aports.git" >> $GITHUB_ENV
           echo "REMOTE_BRANCH=master" >> $GITHUB_ENV
           echo "TARGET_DIR=scripts" >> $GITHUB_ENV
 
