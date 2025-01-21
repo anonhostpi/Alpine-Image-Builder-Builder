@@ -49,7 +49,14 @@ jobs:
         if: env.changed == 'true'
         run: |
           ISSUE_TITLE="Changes detected in aports mkimg scripts"
-          ISSUE_BODY="Changes have been detected in the directory '${{ env.TARGET_DIR }}' of the branch '${{ env.REMOTE_BRANCH }}'.\n\nLatest commit: ${{ env.NEW_COMMIT }}\n\nCompare: [View changes](${{ env.REMOTE_REPO_URL }}/compare/${LATEST_COMMIT}...${{ env.NEW_COMMIT }})"
+          ISSUE_BODY=$(cat <<'EOF'
+          Changes have been detected in the aports repository:
+          - Directory '${{ env.TARGET_DIR }}'
+          - Branch '${{ env.REMOTE_BRANCH }}'
+          - Latest commit: ${{ env.NEW_COMMIT }}
+          - Compare: [View changes](${{ env.REMOTE_REPO_URL }}/compare/${LATEST_COMMIT}...${{ env.NEW_COMMIT }})"
+          EOF
+          )
 
           EXISTING_ISSUE=$(gh issue list --repo $GITHUB_REPOSITORY --search "$ISSUE_TITLE" --json number --jq '.[0].number')
 
