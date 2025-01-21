@@ -8,6 +8,8 @@ on:
 jobs:
   check-changes:
     runs-on: ubuntu-latest
+    env: # Set GH_TOKEN for the entire job
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
       - name: Set up variables
