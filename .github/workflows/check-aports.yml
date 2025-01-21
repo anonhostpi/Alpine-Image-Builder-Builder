@@ -17,7 +17,7 @@ jobs:
         run: |
           # Set defaults
           echo "LATEST_COMMIT=$(gh variable get LATEST_COMMIT --repo $GITHUB_REPOSITORY || echo 'none')" >> $GITHUB_ENV
-          echo "REMOTE_REPO_URL=https://gitlab.alpinelinux.org/alpine/aports.git" >> $GITHUB_ENV
+          echo "REMOTE_REPO_URL=https://gitlab.alpinelinux.org/alpine/aports" >> $GITHUB_ENV
           echo "REMOTE_BRANCH=master" >> $GITHUB_ENV
           echo "TARGET_DIR=scripts" >> $GITHUB_ENV
 
@@ -55,7 +55,7 @@ jobs:
           - Branch '${{ env.REMOTE_BRANCH }}'
           - Previous commit: ${{ env.LATEST_COMMIT }}
           - Latest commit: ${{ env.NEW_COMMIT }}
-          - Compare: [View changes](${{ env.REMOTE_REPO_URL }}/compare/${{ env.LATEST_COMMIT }}...${{ env.NEW_COMMIT }})"
+          - Compare: [View changes](${{ env.REMOTE_REPO_URL }}/compare/${{ env.LATEST_COMMIT }}...${{ env.NEW_COMMIT }})
           EOF
           )
 
