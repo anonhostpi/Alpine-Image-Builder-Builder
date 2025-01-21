@@ -1,0 +1,58 @@
+name: Check Aports mkimg for Changes
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Runs daily at midnight
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up variables
+        id: vars
+        run: |
+          # Set defaults
+          echo "LATEST_COMMIT=$(gh variable get LATEST_COMMIT --repo $GITHUB_REPOSITORY || echo 'none')" >> $GITHUB_ENV
+          echo "REMOTE_REPO_URL=https://example.com/your-remote-repo.git" >> $GITHUB_ENV
+          echo "REMOTE_BRANCH=master" >> $GITHUB_ENV
+          echo "TARGET_DIR=scripts" >> $GITHUB_ENV
+
+      - name: Clone remote repository
+        run: |
+          git clone --single-branch --branch ${{ env.REMOTE_BRANCH }} ${{ env.REMOTE_REPO_URL }} aports
+
+      - name: Get latest commit in target directory
+        id: check
+        run: |
+          cd aports
+          NEW_COMMIT=$(git log -1 --pretty=format:"%H" -- ${{ env.TARGET_DIR }})
+          echo "NEW_COMMIT=$NEW_COMMIT" >> $GITHUB_ENV
+
+          if [[ "$NEW_COMMIT" == "$LATEST_COMMIT" ]]; then
+            echo "No changes detected in ${{ env.TARGET_DIR }}."
+            echo "changed=false" >> $GITHUB_ENV
+          else
+            echo "Changes detected in ${{ env.TARGET_DIR }}."
+            echo "changed=true" >> $GITHUB_ENV
+          fi
+
+      - name: Persist latest commit hash
+        if: env.changed == 'true'
+        run: |
+          gh variable set LATEST_COMMIT --body "${{ env.NEW_COMMIT }}" --repo $GITHUB_REPOSITORY
+
+      - name: Create or update issue for detected changes
+        if: env.changed == 'true'
+        run: |
+          ISSUE_TITLE="Changes detected in aports mkimg scripts"
+          ISSUE_BODY="Changes have been detected in the directory '${{ env.TARGET_DIR }}' of the branch '${{ env.REMOTE_BRANCH }}'.\n\nLatest commit: ${{ env.NEW_COMMIT }}\n\nCompare: [View changes](${{ env.REMOTE_REPO_URL }}/compare/${LATEST_COMMIT}...${{ env.NEW_COMMIT }})"
+
+          EXISTING_ISSUE=$(gh issue list --repo $GITHUB_REPOSITORY --search "$ISSUE_TITLE" --json number --jq '.[0].number')
+
+          if [[ -z "$EXISTING_ISSUE" ]]; then
+            gh issue create --repo $GITHUB_REPOSITORY --title "$ISSUE_TITLE" --body "$ISSUE_BODY"
+          else
+            gh issue comment $EXISTING_ISSUE --body "$ISSUE_BODY"
+          fi
