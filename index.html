@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Alpine Image Builder Builder</title>
+
+        <!--Bootstrap 5-->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link href="styles.css" rel="stylesheet">
+        <script type="text/javascript" src ="Form.js"></script>
+        <script type="module">
+            import { Gitlab } from 'https://esm.sh/@gitbeaker/rest';
+
+            globalThis.git = new Gitlab({
+                host: "https://gitlab.alpinelinux.org"
+            })
+            
+            const APORTS_COMMIT_API_ENDPOINT = "https://gitlab.alpinelinux.org/api/v4/projects/1/repository/commits?per_page=1";
+            fetch(APORTS_COMMIT_API_ENDPOINT)
+                .then(response => {
+                    commit = response.json()[0];
+                    hash = commit.id;
+                    epoch = Math.floor(new Date(commit.committed_date).getTime() / 1000);
+
+                    // window.builder.defaults.inputs.git_last_commit = hash;
+                    // window.builder.defaults.inputs.git_last_commit_epoch = epoch;
+
+                    document.querySelector('[role="status"] .text-primary').classList.remove("spinner-border");
+                    document.querySelector('[role="status"] .text-primary').classList.add("spinner-grow");
+                    document.querySelector('[role="status"] .mb-1 i').innerHTML = "form is ready!";
+                    document.querySelector('[role="status"] .visually-hidden').innerHTML = "Ready!";
+                    document.querySelector("main").style.opacity = 1;
+                })
+        </script>
+    </head>
+    <body>
+        <div class="d-flex justify-content-center align-items-center" style="position: absolute; top:0; right:0; min-height: 100vh; width: 100%;">
+            <div class="text-center" role="status">
+                <div class="mb-1"><i>form is loading...</i></div>
+                <div class="spinner-border text-primary">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+        <main>
+            
+        </main>
+        <footer>
+
+        </footer>
+
+
+        <!--Bootstrap 5-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    </body>
+</html>
