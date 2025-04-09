@@ -70,7 +70,7 @@ jobs:
           EOF
           )
 
-          for sha in "${ env.COMMITS }"; do
+          for sha in "${{ env.COMMITS }}"; do
             ISSUE_BODY+="
           - SHA: [$sha](https://gitlab.alpinelinux.org/alpine/aports/-/commit/$sha)"
           done
