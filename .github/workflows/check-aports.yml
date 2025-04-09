@@ -70,10 +70,10 @@ jobs:
           EOF
           )
 
-          for sha in "${{ env.COMMITS }}"; do
+          while IFS= read -r sha; do
             ISSUE_BODY+="
           - SHA: [$sha](https://gitlab.alpinelinux.org/alpine/aports/-/commit/$sha)"
-          done
+          done <<< "${{ env.COMMITS }}"
 
           EXISTING_ISSUE=$(gh issue list --repo $GITHUB_REPOSITORY --search "$ISSUE_TITLE" --json number --jq '.[0].number')
 
