@@ -33,10 +33,10 @@ jobs:
           echo "NEW_COMMIT=$NEW_COMMIT" >> $GITHUB_ENV
 
           if [[ "$NEW_COMMIT" == "$LATEST_COMMIT" ]]; then
-            echo "No changes detected in ${{ env.TARGET_DIR }}."
+            echo "No changes detected in ${{ env.TARGET_DIR }}: $LATEST_COMMIT .. $NEW_COMMIT"
             echo "changed=false" >> $GITHUB_ENV
           else
-            echo "Changes detected in ${{ env.TARGET_DIR }}."
+            echo "Changes detected in ${{ env.TARGET_DIR }}: $LATEST_COMMIT .. $NEW_COMMIT"
             echo "changed=true" >> $GITHUB_ENV
           fi
 
@@ -48,6 +48,7 @@ jobs:
       - name: Create or update issue for detected changes
         if: env.changed == 'true'
         run: |
+          pwd # print working directory for troubleshooting
           ISSUE_TITLE="Changes detected in aports mkimg scripts"
           ISSUE_BODY=$(cat <<'EOF'
           Changes have been detected in the aports repository:
