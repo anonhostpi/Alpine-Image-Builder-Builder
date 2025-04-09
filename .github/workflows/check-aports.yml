@@ -67,5 +67,5 @@ jobs:
           if [[ -z "$EXISTING_ISSUE" ]]; then
             gh issue create --repo $GITHUB_REPOSITORY --title "$ISSUE_TITLE" --body "$ISSUE_BODY"
           else
-            gh issue comment $EXISTING_ISSUE --body "$ISSUE_BODY"
+            gh issue comment --repo $GITHUB_REPOSITORY $EXISTING_ISSUE --body "$ISSUE_BODY"
           fi
