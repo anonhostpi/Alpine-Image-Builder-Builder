@@ -39,7 +39,7 @@ jobs:
             echo "Changes detected in ${{ env.TARGET_DIR }}: $LATEST_COMMIT .. $NEW_COMMIT"
             {
               echo 'COMMITS<<EOF'
-              git log --format="%H" "$LATEST_COMMIT~1..HEAD" -- scripts
+              git log --format='[%s](${{ env.REMOTE_REPO_URL }}/-/commit/%H)' "$LATEST_COMMIT~1..HEAD" -- scripts
               echo 'EOF'
             } >> "$GITHUB_ENV"
             echo "changed=true" >> $GITHUB_ENV
@@ -57,11 +57,11 @@ jobs:
           ISSUE_TITLE="Changes detected in aports mkimg scripts"
           CHANGES="${{ env.REMOTE_REPO_URL }}/compare/${{ env.LATEST_COMMIT }}...${{ env.NEW_COMMIT }}"
           echo "changes detected: $CHANGES"
-          echo "- check them out at https://gitlab.alpinelinux.org/alpine/aports/-/commits/master/${{ env.TARGET_DIR }}"
+          echo "- check them out at ${{ env.REMOTE_REPO_URL }}/-/commits/master/${{ env.TARGET_DIR }}"
           ISSUE_BODY=$(cat << EOF
           Changes have been detected in the aports repository:
           - Directory '${{ env.TARGET_DIR }}'
-            - [History](https://gitlab.alpinelinux.org/alpine/aports/-/commits/master/${{ env.TARGET_DIR }})
+            - [History](${{ env.REMOTE_REPO_URL }}/-/commits/master/${{ env.TARGET_DIR }})
           - Branch '${{ env.REMOTE_BRANCH }}'
           - Previous commit: ${{ env.LATEST_COMMIT }}
           - Latest commit: ${{ env.NEW_COMMIT }}
@@ -72,7 +72,7 @@ jobs:
 
           while IFS= read -r sha; do
             ISSUE_BODY+="
-          - SHA: [$sha](https://gitlab.alpinelinux.org/alpine/aports/-/commit/$sha)"
+            - $sha"
           done <<< "${{ env.COMMITS }}"
 
           EXISTING_ISSUE=$(gh issue list --repo $GITHUB_REPOSITORY --search "$ISSUE_TITLE" --json number --jq '.[0].number')
