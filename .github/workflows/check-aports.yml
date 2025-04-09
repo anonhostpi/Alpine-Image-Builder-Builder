@@ -37,6 +37,8 @@ jobs:
             echo "changed=false" >> $GITHUB_ENV
           else
             echo "Changes detected in ${{ env.TARGET_DIR }}: $LATEST_COMMIT .. $NEW_COMMIT"
+            COMMITS=$(git log --format="%H" $LATEST_COMMIT~1..HEAD -- scripts)
+            echo "COMMITS=$COMMITS" >> $GITHUB_ENV
             echo "changed=true" >> $GITHUB_ENV
           fi
 
@@ -61,8 +63,14 @@ jobs:
           - Previous commit: ${{ env.LATEST_COMMIT }}
           - Latest commit: ${{ env.NEW_COMMIT }}
           - Compare: [View changes]($CHANGES)
+          - Specific Changes:
           EOF
           )
+
+          for sha in "${ env.COMMITS }"; do
+            ISSUE_BODY+="
+          - SHA: [$sha](https://gitlab.alpinelinux.org/alpine/aports/-/commit/$sha)"
+          done
 
           EXISTING_ISSUE=$(gh issue list --repo $GITHUB_REPOSITORY --search "$ISSUE_TITLE" --json number --jq '.[0].number')
 
