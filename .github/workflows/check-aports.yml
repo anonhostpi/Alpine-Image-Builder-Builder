@@ -25,14 +25,14 @@ jobs:
         run: |
           git clone --single-branch --branch ${{ env.REMOTE_BRANCH }} ${{ env.REMOTE_REPO_URL }} aports
 
-      - name: Get latest commit in target directory
+      - name: Check latest commit for changes
         id: check
         run: |
           cd aports
-          NEW_COMMIT=$(git log -1 --pretty=format:"%H" -- ${{ env.TARGET_DIR }})
+          NEW_COMMIT=$(git log -1 --pretty=format:"%H")
           echo "NEW_COMMIT=$NEW_COMMIT" >> $GITHUB_ENV
 
-          if [[ "$NEW_COMMIT" == "$LATEST_COMMIT" ]]; then
+          if git diff --quiet ${{ env.LATEST_COMMIT }} HEAD -- ${{ env.TARGET_DIR }}; then
             echo "No changes detected in ${{ env.TARGET_DIR }}: $LATEST_COMMIT .. $NEW_COMMIT"
             echo "changed=false" >> $GITHUB_ENV
           else
