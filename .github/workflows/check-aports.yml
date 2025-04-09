@@ -52,9 +52,11 @@ jobs:
           ISSUE_TITLE="Changes detected in aports mkimg scripts"
           CHANGES="${{ env.REMOTE_REPO_URL }}/compare/${{ env.LATEST_COMMIT }}...${{ env.NEW_COMMIT }}"
           echo "changes detected: $CHANGES"
+          echo "- check them out at https://gitlab.alpinelinux.org/alpine/aports/-/commits/master/${{ env.TARGET_DIR }}"
           ISSUE_BODY=$(cat <<'EOF'
           Changes have been detected in the aports repository:
           - Directory '${{ env.TARGET_DIR }}'
+            - [History](https://gitlab.alpinelinux.org/alpine/aports/-/commits/master/${{ env.TARGET_DIR }})
           - Branch '${{ env.REMOTE_BRANCH }}'
           - Previous commit: ${{ env.LATEST_COMMIT }}
           - Latest commit: ${{ env.NEW_COMMIT }}
