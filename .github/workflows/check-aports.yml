@@ -48,10 +48,10 @@ jobs:
       - name: Create or update issue for detected changes
         if: env.changed == 'true'
         run: |
-          pwd # print working directory for troubleshooting
+          echo "working directory: $(pwd)"
           ISSUE_TITLE="Changes detected in aports mkimg scripts"
           CHANGES="${{ env.REMOTE_REPO_URL }}/compare/${{ env.LATEST_COMMIT }}...${{ env.NEW_COMMIT }}"
-          echo "$CHANGES"
+          echo "changes detected: $CHANGES"
           ISSUE_BODY=$(cat <<'EOF'
           Changes have been detected in the aports repository:
           - Directory '${{ env.TARGET_DIR }}'
