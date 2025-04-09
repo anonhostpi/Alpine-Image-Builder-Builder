@@ -73,7 +73,9 @@ jobs:
           while IFS= read -r sha; do
             ISSUE_BODY+="
             - $sha"
-          done <<< "${{ env.COMMITS }}"
+          done <<EOF
+          ${{ env.COMMITS }}
+          EOF
 
           EXISTING_ISSUE=$(gh issue list --repo $GITHUB_REPOSITORY --search "$ISSUE_TITLE" --json number --jq '.[0].number')
 
