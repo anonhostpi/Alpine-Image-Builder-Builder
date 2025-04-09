@@ -37,8 +37,11 @@ jobs:
             echo "changed=false" >> $GITHUB_ENV
           else
             echo "Changes detected in ${{ env.TARGET_DIR }}: $LATEST_COMMIT .. $NEW_COMMIT"
-            COMMITS=$(git log --format="%H" $LATEST_COMMIT~1..HEAD -- scripts)
-            echo "COMMITS=$COMMITS" >> $GITHUB_ENV
+            {
+              echo 'COMMITS<<EOF'
+              git log --format="%H" "$LATEST_COMMIT~1..HEAD" -- scripts
+              echo 'EOF'
+            } >> "$GITHUB_ENV"
             echo "changed=true" >> $GITHUB_ENV
           fi
 
